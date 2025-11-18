@@ -1,0 +1,78 @@
+name: Build and Deploy Documentation
+
+on:
+  push:
+    branches:
+      - main
+  # Allow running this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Sets permissions for GITHUB_TOKEN
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Pandoc and LaTeX
+        run: |
+          sudo apt-get update
+          # Install pandoc and a basic LaTeX environment for PDF generation
+          sudo apt-get install -y pandoc texlive-latex-base texlive-fonts-recommended texlive-latex-extra
+
+      - name: Create output directories
+        run: |
+          mkdir -p out
+          mkdir -p dist
+
+      - name: Get current date
+        id: date
+        run: echo "DATE=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+
+      - name: Generate PDF
+        run: |
+          # Get repository name from the GitHub context
+          REPO_NAME=$(echo "${{ github.repository }}" | cut -d '/' -f 2)
+          echo "Generating PDF: out/report_${REPO_NAME}_${{ steps.date.outputs.DATE }}.pdf"
+          pandoc README.md -o "out/report_${REPO_NAME}_${{ steps.date.outputs.DATE }}.pdf"
+
+      - name: Generate Website
+        run: |
+          # -s for standalone, -c to link the local CSS, -o for output
+          pandoc README.md -s --metadata title="${{ github.repository }}" -c style.css -o dist/index.html
+
+      - name: Upload PDF artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf-report
+          path: out/
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: 'dist'
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        if: github.ref_type == 'tag'
+        with:
+          files: |
+            out/*.pdf
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
