@@ -33,3 +33,24 @@ Here are some bullet points
 ## Image
 
 ![image](./sample.png)
+
+## Misc YAML declarations
+
+```
+---
+title: Sample
+header: wow...
+abstract: This is a pandoc test . . .
+---
+## Hiii
+
+This is a sample generated with pandoc and css
+
+Here are some bullet points
+
+- first
+- second
+
+```
+
+![preview](./sample1.png)
