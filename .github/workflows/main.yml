@@ -73,6 +73,8 @@ jobs:
           name: Generated PDF Output
           files: |
             out/*.pdf
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Deploy to GitHub Pages
         id: deployment
