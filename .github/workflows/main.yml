@@ -1,0 +1,92 @@
+name: Build and Deploy Documentation
+
+on:
+  push:
+    branches:
+      - main
+  # Allow running this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Sets permissions for GITHUB_TOKEN
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Pandoc
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pandoc weasyprint
+
+      - name: Create output directories
+        run: |
+          mkdir -p out
+          mkdir -p dist
+
+      - name: Get current date and filename
+        id: date
+        run: |
+          DATE=$(date +'%Y-%m-%d')
+          REPO_NAME=$(echo '${{ github.repository }}' | cut -d '/' -f 2)
+          PDFFILE="report_${REPO_NAME}_${DATE}.pdf"
+          echo "DATE=$DATE" >> $GITHUB_OUTPUT
+          echo "PDFFILE=$PDFFILE" >> $GITHUB_OUTPUT
+
+      - name: Generate PDF
+        run: |
+          pandoc README.md \
+            --pdf-engine=weasyprint \
+            -c style.css \
+            --metadata title="${{ github.repository }}" \
+            -o "out/${{ steps.date.outputs.PDFFILE }}"
+
+      - name: Generate Website
+        run: |
+          pandoc README.md \
+            -s \
+            --metadata title="${{ github.repository }}" \
+            -c style.css \
+            -o dist/index.html
+          
+          mv style.css dist/
+
+      - name: Upload PDF artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf-report
+          path: out/
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'dist'
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.date.outputs.DATE }}
+          name: Pandoc PDF from ${{ steps.date.outputs.DATE }}
+          draft: true
+          files: out/*.pdf
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
