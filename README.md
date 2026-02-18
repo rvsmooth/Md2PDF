@@ -2,6 +2,10 @@
 
 Template for creating beautiful PDFs, html from markdown using pandoc and css
 
+## Dependencies
+```
+pandoc python-weasyprint
+```
 ## Usage
 
 ```
