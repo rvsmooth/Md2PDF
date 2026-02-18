@@ -18,6 +18,13 @@ example
 pandoc -t html --css ./style.css ./sample.md -o sample.pdf
 ```
 
+or
+
+install [Just](https://just.systems/) and run the following in the project directory
+```
+just md2pdf ./sample.md ./style.css
+```
+in case you don't provide a style.css default style.css is used (located as style.css in the project root dir)
 # Preview
 
 ### MD file
