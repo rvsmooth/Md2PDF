@@ -1,0 +1,110 @@
+:root {
+  --ctp-bg: #fdf6e3;        
+  --ctp-surface: #eee8d5;   
+  --ctp-text: #657b83;      
+  --ctp-highlight: #268bd2; 
+  --ctp-muted: #93a1a1;     
+  --ctp-line: #d33682;      
+}
+
+/* General body and text styling */
+body {
+  background-color: var(--ctp-bg);
+  color: var(--ctp-text);
+  font-family: Adwaita Sans;
+  line-height: 1.6;
+  padding: 1em;
+  margin: 0;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--ctp-highlight);
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+/* Paragraphs */
+p {
+  margin-top: 0;
+  margin-bottom: 1em;
+}
+
+/* Links */
+a {
+  color: var(--ctp-highlight);
+  text-decoration: none;
+}
+
+a:hover, a:focus {
+  text-decoration: underline;
+}
+
+/* Blockquotes */
+blockquote {
+  border-left: 4px solid var(--ctp-highlight);
+  color: var(--ctp-muted);
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 1em;
+  font-style: italic;
+  background-color: var(--ctp-surface);
+  border-radius: 4px;
+}
+
+/* Code blocks and inline code */
+pre, code {
+  font-family: 'Fira Mono', Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono',
+    monospace;
+  background-color: var(--ctp-surface);
+  color: var(--ctp-text);
+  border-radius: 4px;
+}
+
+pre {
+  padding: 1em;
+  overflow-x: auto;
+}
+
+code {
+  padding: 0.2em 0.4em;
+  font-size: 0.9em;
+}
+
+/* Lists */
+ul, ol {
+  margin: 1em 0 1em 1.5em;
+}
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1em;
+}
+
+th, td {
+  border: 1px solid var(--ctp-line);
+  padding: 0.5em 1em;
+  text-align: left;
+}
+
+th {
+  background-color: var(--ctp-surface);
+  color: var(--ctp-highlight);
+}
+
+/* Horizontal rule */
+hr {
+  border: none;
+  border-top: 1px solid var(--ctp-line);
+  margin: 2em 0;
+}
+
+@page {
+  size: A4;
+  margin: 10mm;
+  background-color: var(--ctp-bg);
+}
