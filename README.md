@@ -3,9 +3,11 @@
 Template for creating beautiful PDFs, html from markdown using pandoc and css
 
 ## Dependencies
+
 ```
 pandoc python-weasyprint
 ```
+
 ## Usage
 
 ```
@@ -21,10 +23,13 @@ pandoc -t html --css ./style.css ./sample.md -o sample.pdf
 or
 
 install [Just](https://just.systems/) and run the following in the project directory
+
 ```
 just md2pdf ./sample.md ./style.css
 ```
+
 in case you don't provide a style.css default style.css is used (located as style.css in the project root dir)
+
 # Preview
 
 ### MD file
@@ -64,4 +69,12 @@ Here are some bullet points
 
 ```
 
+the block below can insert page breaks or new page
+
+```
+```{=openxml}
+<w:p><w:r><w:br w:type="page"/></w:r></w:p>
+```
+
+```
 ![preview](./sample1.png)
